@@ -32,7 +32,7 @@ class GrayLogClient(object):
         res = requests.get(url, auth=(self.api_token, 'token'))
         return res
 
-    def search_result_json(self, query, _from, _to, fields, streams=None):
+    def search_parsed_result(self, query, _from, _to, fields, streams=None):
         res = self.search(query, _from, _to, fields, streams)
         log_strs = res.text.split("\n")
 
