@@ -25,11 +25,11 @@ class GrayLogClient(object):
         else:
             streams_filter_url = "{}{}".format(STREAM_FILTER_HANDLER, ",".join(streams)) 
 
-        url = "{}{}{}?query={}&from={}&to={}{}{}".format(self.url,
+        search_url = "{}{}{}?query={}&from={}&to={}{}{}".format(self.url,
          self.api_handleler, SEARCH_ABSOLUTE_HANDLER, query,
           _from, _to, field_url, streams_filter_url)
 
-        res = requests.get(url, auth=(self.api_token, 'token'))
+        res = requests.get(search_url, auth=(self.api_token, 'token'))
         return res
 
     def search_parsed_result(self, query, _from, _to, fields, streams=None):
@@ -57,7 +57,7 @@ class GrayLogClient(object):
         return result
 
     def get_fields(self):
-        url = "{}{}{}".format(self.url, self.api_handleler, GET_FIELDS_HANDLER)
+        get_field_url = "{}{}{}".format(self.url, self.api_handleler, GET_FIELDS_HANDLER)
 
-        res = requests.get(url, auth=(self.api_token, 'token'))
+        res = requests.get(get_field_url, auth=(self.api_token, 'token'))
         return json.loads(res.text)
