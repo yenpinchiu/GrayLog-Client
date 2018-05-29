@@ -8,7 +8,7 @@ GET_FIELDS_HANDLER = "/system/fields"
 GET_STREAMS_HANDLER = "/streams"
 FIELD_HANDLER = "&fields="
 FILTER_HANDLER = "&filter="
-STREAM_FILTER_HANDLER = "{}streams:".format(FILTER_HANDLER)
+STREAM_POSTFIX = "streams:"
 
 MESSAGE_NUM_LIMIT = 10000
 
@@ -22,12 +22,17 @@ class GrayLogClient(object):
         self.api_handleler = api_handleler
         self.api_token = api_token
 
-    def search(self, query, start_date, end_date, fields, streams):
+    def search(self, query, start_date, end_date, fields = None, stream = None):
         start_date_str = start_date.strftime(GRAYLOG_API_TIME_STR_FORMAT)
         end_date_str = end_date.strftime(GRAYLOG_API_TIME_STR_FORMAT)
 
-        field_url = "{}{}".format(FIELD_HANDLER, ",".join(fields))
-        streams_filter_url = "{}{}".format(STREAM_FILTER_HANDLER, ",".join(streams)) 
+        field_url = ""
+        if fields is not None:
+            field_url = "{}{}".format(FIELD_HANDLER, ",".join(fields))
+        
+        stream_url = ""
+        if stream is not None:
+            stream_url = "{}{}{}".format(FILTER_HANDLER, STREAM_POSTFIX, stream) 
 
         search_url = "{}{}{}?query={}&limit={}&timestamp=asc&from={}&to={}{}{}".format(
             self.url, 
@@ -38,7 +43,7 @@ class GrayLogClient(object):
             start_date_str, 
             end_date_str, 
             field_url, 
-            streams_filter_url)
+            stream_url)
 
         res = requests.get(search_url, auth=(self.api_token, 'token'))
         return json.loads(res.text)
