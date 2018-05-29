@@ -40,14 +40,7 @@ class GrayLogClient(object):
             streams_filter_url)
 
         res = requests.get(search_url, auth=(self.api_token, 'token'))
-        return res
-
-    def search_result_json(self, query, start_date, end_date, fields, streams):
-        res = self.search(query, start_date, end_date, fields, streams)
-        res_text = res.text
-        res_text_json = json.loads(res_text)
-
-        return res_text_json
+        return json.loads(res.text)
 
     def get_fields(self):
         get_field_url = "{}{}{}".format(self.url, self.api_handleler, GET_FIELDS_HANDLER)
