@@ -2,12 +2,47 @@
 
 ## Usage
 
-`GC = GrayLogClient("localhost", 9000, "/api", "your_api_token")`
+```
+from datetime import datetime as dt
 
-`fields = GC.get_fields()`
+GRAYLOG_URL = "graylog_server_address"
+GRAYLOG_PORT = 9000
+GRAYLOG_API_TOKEN = "graylog_api_token"
+GRAYLOG_API_TIME_STR_FORMAT = '%Y-%m-%d %H:%M:%S'
 
-`search_results = GC.search_result_json(query='*', _from='2018-01-25 08:00:00', _to='2018-01-25 08:01:00', fields=fields["fields"])`
+start_time = dt.strptime('2018-05-01 00:00:00', GRAYLOG_API_TIME_STR_FORMAT)
+end_time = dt.strptime('2018-05-20 00:00:00', GRAYLOG_API_TIME_STR_FORMAT)
 
-`search_results = GC.search_result_json(query='*', _from='2018-01-25 08:00:00', _to='2018-01-25 08:01:00', fields=["example_field_0", "example_field_1"])`
+GC = GrayLogClient(
+    GRAYLOG_URL, 
+    GRAYLOG_PORT, 
+    "/api", 
+    GRAYLOG_API_TOKEN)
 
-`search_results = GC.search_result_json(query='*', _from='2018-01-25 08:00:00', _to='2018-01-25 08:01:00', fields=fields["fields"], streams=["example_stream_ID_0", "example_stream_ID_1"])`
+fields = GC.get_fields()
+test_field_0 = fields["fields"][0]
+test_field_1 = fields["fields"][1]
+
+streams = GC.get_streams()
+test_stream_0 = streams["streams"][0]["id"]
+
+search_results = GC.search(
+    query='*', 
+    start_date=start_time, 
+    end_date=end_time)
+
+search_results = GC.search(
+    query='*', 
+    start_date=start_time, 
+    end_date=end_time, 
+    stream=test_stream_0)
+
+search_results = GC.search(
+    query='*', 
+    start_date=start_time, 
+    end_date=end_time, 
+    fields=[test_field_0, test_field_1])
+
+for message in search_results['messages']:
+    print(message)
+```
