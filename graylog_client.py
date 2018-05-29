@@ -32,29 +32,12 @@ class GrayLogClient(object):
         res = requests.get(search_url, auth=(self.api_token, 'token'))
         return res
 
-    def search_parsed_result(self, query, _from, _to, fields, streams=None):
+    def search_result_json(self, query, _from, _to, fields, streams=None):
         res = self.search(query, _from, _to, fields, streams)
-        log_strs = res.text.split("\n")
+        res_text = res.text
+        res_text_json = json.loads(res_text)
 
-        result = []
-        first_element_flag = True
-        for log_str in log_strs:
-            log_str_split = log_str.split(",")
-            
-            log_str_split = [ log[1:-1] for log in log_str_split]
-
-            if first_element_flag:
-                keys = log_str_split
-                first_element_flag = False
-                continue
-
-            log_json = {}
-            for i, (key, log) in enumerate(zip(keys, log_str_split)):
-                log_json.update({key:log})
-
-            result.append(log_json)
-
-        return result
+        return res_text_json
 
     def get_fields(self):
         get_field_url = "{}{}{}".format(self.url, self.api_handleler, GET_FIELDS_HANDLER)
