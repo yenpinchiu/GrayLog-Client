@@ -10,8 +10,6 @@ FIELD_HANDLER = "&fields="
 FILTER_HANDLER = "&filter="
 STREAM_POSTFIX = "streams:"
 
-MESSAGE_NUM_LIMIT = 10000
-
 GRAYLOG_API_TIME_STR_FORMAT = '%Y-%m-%d %H:%M:%S'
 
 class GrayLogClient(object):
@@ -22,7 +20,7 @@ class GrayLogClient(object):
         self.api_handleler = api_handleler
         self.api_token = api_token
 
-    def search(self, query, start_date, end_date, fields = None, stream = None):
+    def search(self, query, start_date, end_date, message_num_limit, fields = None, stream = None):
         start_date_str = start_date.strftime(GRAYLOG_API_TIME_STR_FORMAT)
         end_date_str = end_date.strftime(GRAYLOG_API_TIME_STR_FORMAT)
 
@@ -39,7 +37,7 @@ class GrayLogClient(object):
             self.api_handleler, 
             SEARCH_ABSOLUTE_HANDLER, 
             query, 
-            MESSAGE_NUM_LIMIT, 
+            message_num_limit, 
             start_date_str, 
             end_date_str, 
             field_url, 

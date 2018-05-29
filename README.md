@@ -29,18 +29,21 @@ test_stream_0 = streams["streams"][0]["id"]
 search_results = GC.search(
     query='*', 
     start_date=start_time, 
-    end_date=end_time)
+    end_date=end_time, 
+    100)
 
 search_results = GC.search(
     query='*', 
     start_date=start_time, 
     end_date=end_time, 
+    100, 
     stream=test_stream_0)
 
 search_results = GC.search(
     query='*', 
     start_date=start_time, 
     end_date=end_time, 
+    100, 
     fields=[test_field_0, test_field_1])
 
 for message in search_results['messages']:
