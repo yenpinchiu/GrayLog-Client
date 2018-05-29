@@ -21,16 +21,12 @@ class GrayLogClient(object):
         self.api_handleler = api_handleler
         self.api_token = api_token
 
-    def search(self, query, start_date, end_date, fields, streams=None):
+    def search(self, query, start_date, end_date, fields, streams):
         start_date_str = start_date.strftime(GRAYLOG_API_TIME_STR_FORMAT)
         end_date_str = end_date.strftime(GRAYLOG_API_TIME_STR_FORMAT)
 
         field_url = "{}{}".format(FIELD_HANDLER, ",".join(fields))
-
-        if streams is None:
-            streams_filter_url = ""
-        else:
-            streams_filter_url = "{}{}".format(STREAM_FILTER_HANDLER, ",".join(streams)) 
+        streams_filter_url = "{}{}".format(STREAM_FILTER_HANDLER, ",".join(streams)) 
 
         search_url = "{}{}{}?query={}&limit={}&timestamp=asc&from={}&to={}{}{}".format(
             self.url, 
@@ -46,7 +42,7 @@ class GrayLogClient(object):
         res = requests.get(search_url, auth=(self.api_token, 'token'))
         return res
 
-    def search_result_json(self, query, start_date, end_date, fields, streams=None):
+    def search_result_json(self, query, start_date, end_date, fields, streams):
         res = self.search(query, start_date, end_date, fields, streams)
         res_text = res.text
         res_text_json = json.loads(res_text)
