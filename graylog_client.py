@@ -9,6 +9,8 @@ FIELD_HANDLER = "&fields="
 FILTER_HANDLER = "&filter="
 STREAM_FILTER_HANDLER = "{}streams:".format(FILTER_HANDLER)
 
+MESSAGE_NUM_LIMIT = 10000
+
 class GrayLogClient(object):
     def __init__(self, host, port, api_handleler, api_token):
         self.host = host
@@ -25,9 +27,16 @@ class GrayLogClient(object):
         else:
             streams_filter_url = "{}{}".format(STREAM_FILTER_HANDLER, ",".join(streams)) 
 
-        search_url = "{}{}{}?query={}&from={}&to={}{}{}".format(self.url,
-         self.api_handleler, SEARCH_ABSOLUTE_HANDLER, query,
-          _from, _to, field_url, streams_filter_url)
+        search_url = "{}{}{}?query={}&limit={}&timestamp=asc&from={}&to={}{}{}".format(
+            self.url, 
+            self.api_handleler, 
+            SEARCH_ABSOLUTE_HANDLER, 
+            query, 
+            MESSAGE_NUM_LIMIT, 
+            _from, 
+            _to, 
+            field_url, 
+            streams_filter_url)
 
         res = requests.get(search_url, auth=(self.api_token, 'token'))
         return res
