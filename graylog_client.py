@@ -5,6 +5,7 @@ GRAYLOG_API_URL = "http://{}:{}"
 SEARCH_HANDLER = "/search"
 SEARCH_ABSOLUTE_HANDLER = "{}/universal/absolute".format(SEARCH_HANDLER)
 GET_FIELDS_HANDLER = "/system/fields"
+GET_STREAMS_HANDLER = "/streams"
 FIELD_HANDLER = "&fields="
 FILTER_HANDLER = "&filter="
 STREAM_FILTER_HANDLER = "{}streams:".format(FILTER_HANDLER)
@@ -46,4 +47,10 @@ class GrayLogClient(object):
         get_field_url = "{}{}{}".format(self.url, self.api_handleler, GET_FIELDS_HANDLER)
 
         res = requests.get(get_field_url, auth=(self.api_token, 'token'))
+        return json.loads(res.text)
+
+    def get_streams(self):
+        get_stream_url = "{}{}{}".format(self.url, self.api_handleler, GET_STREAMS_HANDLER)
+
+        res = requests.get(get_stream_url, auth=(self.api_token, 'token'))
         return json.loads(res.text)
